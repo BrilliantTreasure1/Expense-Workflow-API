@@ -448,3 +448,77 @@ Run database migration
 ```
 node dist/database/migrate
 ```
+
+
+
+# Testing
+
+The project includes unit tests to verify the correctness of the business logic.
+
+### Testing Framework
+
+Vitest is used as the testing framework for fast and lightweight unit testing.
+
+### Test Coverage
+
+Unit tests are implemented for the following parts of the system:
+
+Entities
+
+    User entity validation and serialization
+    Workflow entity validation and behavior
+    Expense entity validation and serialization
+
+Authentication Use Cases
+
+    Register use case
+    Login use case
+
+Workflow Use Cases
+
+    CreateWorkflow
+    UpdateWorkflow
+    GetAllWorkflow
+    DeleteWorkflow
+    ArchiveWorkflow
+    UnarchiveWorkflow
+
+Expense Use Cases
+
+    CreateExpense
+    UpdateExpense
+    GetAllExpenses
+    DeleteExpense
+
+Reporting Use Cases
+
+    ReportOverview
+    ReportWorkflow
+
+### Testing Approach
+
+Repositories are mocked during tests so that business logic can be tested independently from the database.
+
+This ensures:
+
+    Faster tests
+    Deterministic results
+    Isolation of domain logic
+
+### Run Tests
+
+To run the test suite:
+```
+npm run test
+```
+Or with Vitest directly:
+```
+npx vitest
+```
+The tests validate:
+
+    business rules
+    validation logic
+    ownership checks
+    budget calculations
+    edge cases such as zero budgets or empty datasets
