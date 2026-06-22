@@ -9,11 +9,15 @@ export class ReportOverview implements IReportOverview {
     ) {}
 
     async getOverview(userId: number): Promise<OverviewReport> {
-        const { totalWorkflows, totalBudget } = await this.workflowRepo.getWorkflowStats(userId);
-        const totalExpenses = await this.expenseRepo.getTotalExpensesByUserId(userId);
+        const [stats, totalExpenses, categoryBreakdown] = await Promise.all([
+            this.workflowRepo.getWorkflowStats(userId),
+            this.expenseRepo.getTotalExpensesByUserId(userId),
+            this.expenseRepo.getCategorySummaryByUserId(userId),
+        ]);
+
+        const { totalWorkflows, totalBudget } = stats;
         const remainingBudget = totalBudget - totalExpenses;
         const budgetUsagePercent = totalBudget > 0 ? Math.round((totalExpenses / totalBudget) * 100) : 0;
-        const categoryBreakdown = await this.expenseRepo.getCategorySummaryByUserId(userId);
 
         return {
             totalWorkflows,
