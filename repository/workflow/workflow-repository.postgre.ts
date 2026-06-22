@@ -78,13 +78,13 @@ export class WorkflowRepositoryPostgresql implements IWorkflowRepository {
         }
     }
 
-    async findById(id: number): Promise<Workflow | null> {
+    async findById(id: number, userId: number): Promise<Workflow | null> {
         try {
             const query = `
-                SELECT * FROM workflows WHERE id = $1
+                SELECT * FROM workflows WHERE id = $1 AND user_id = $2
             `;
 
-            const result = await pool.query(query, [id]);
+            const result = await pool.query(query, [id, userId]);
             const row = result.rows[0];
 
             if (!row) {

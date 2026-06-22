@@ -25,7 +25,7 @@ describe('UpdateWorkflow usecase', () => {
 
     expect(result.getTitle()).toBe('Updated Title')
     expect(result.getBudget()).toBe(100000)
-    expect(mockRepo.findById).toHaveBeenCalledWith(1)
+    expect(mockRepo.findById).toHaveBeenCalledWith(1, 1)
     expect(mockRepo.updateWorkflow).toHaveBeenCalledOnce()
   })
 
@@ -48,16 +48,6 @@ describe('UpdateWorkflow usecase', () => {
     mockRepo.findById.mockResolvedValue(null)
 
     await expect(usecase.update(1, 999, 'Title', 1000, 'desc'))
-      .rejects.toThrow('Workflow not found')
-
-    expect(mockRepo.updateWorkflow).not.toHaveBeenCalled()
-  })
-
-  it('throws when workflow belongs to another user', async () => {
-    const existing = Workflow.create(1, 2, 'Other user workflow', 50000, 'desc')
-    mockRepo.findById.mockResolvedValue(existing)
-
-    await expect(usecase.update(1, 1, 'Title', 1000, 'desc'))
       .rejects.toThrow('Workflow not found')
 
     expect(mockRepo.updateWorkflow).not.toHaveBeenCalled()

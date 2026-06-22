@@ -11,9 +11,9 @@ export class CreateExpense implements ICreateExpense {
 
     async create(workflowId: number, userId: number, title: string, description: string, amount: number, category: string | null, date: string): Promise<Expense> {
 
-        const workflow = await this.workflowRepo.findById(workflowId);
+        const workflow = await this.workflowRepo.findById(workflowId, userId);
 
-        if (!workflow || workflow.userId !== userId) {
+        if (!workflow) {
             throw new Error("Workflow not found");
         }
 

@@ -9,9 +9,9 @@ export class ReportWorkflow implements IReportWorkflow {
     ) {}
 
     async getReport(workflowId: number, userId: number): Promise<WorkflowReport> {
-        const workflow = await this.workflowRepo.findById(workflowId);
+        const workflow = await this.workflowRepo.findById(workflowId, userId);
 
-        if (!workflow || workflow.userId !== userId) {
+        if (!workflow) {
             throw new Error("Workflow not found");
         }
 

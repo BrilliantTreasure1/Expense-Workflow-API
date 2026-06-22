@@ -30,7 +30,7 @@ describe('ArchiveWorkflow usecase', () => {
     const result = await usecase.archive(1, 1)
 
     expect(result.getStatus()).toBe('archive')
-    expect(mockRepo.findById).toHaveBeenCalledWith(1)
+    expect(mockRepo.findById).toHaveBeenCalledWith(1, 1)
     expect(mockRepo.archiveWorkflow).toHaveBeenCalledWith(1, 1)
   })
 
@@ -38,16 +38,6 @@ describe('ArchiveWorkflow usecase', () => {
     mockRepo.findById.mockResolvedValue(null)
 
     await expect(usecase.archive(1, 999))
-      .rejects.toThrow('Workflow not found')
-
-    expect(mockRepo.archiveWorkflow).not.toHaveBeenCalled()
-  })
-
-  it('throws when workflow belongs to another user', async () => {
-    const existing = Workflow.create(1, 2, 'Other workflow', 50000, 'desc')
-    mockRepo.findById.mockResolvedValue(existing)
-
-    await expect(usecase.archive(1, 1))
       .rejects.toThrow('Workflow not found')
 
     expect(mockRepo.archiveWorkflow).not.toHaveBeenCalled()
@@ -82,7 +72,7 @@ describe('UnarchiveWorkflow usecase', () => {
     const result = await usecase.unarchive(1, 1)
 
     expect(result.getStatus()).toBe('active')
-    expect(mockRepo.findById).toHaveBeenCalledWith(1)
+    expect(mockRepo.findById).toHaveBeenCalledWith(1, 1)
     expect(mockRepo.unarchiveWorkflow).toHaveBeenCalledWith(1, 1)
   })
 
@@ -90,16 +80,6 @@ describe('UnarchiveWorkflow usecase', () => {
     mockRepo.findById.mockResolvedValue(null)
 
     await expect(usecase.unarchive(1, 999))
-      .rejects.toThrow('Workflow not found')
-
-    expect(mockRepo.unarchiveWorkflow).not.toHaveBeenCalled()
-  })
-
-  it('throws when workflow belongs to another user', async () => {
-    const existing = Workflow.create(1, 2, 'Other workflow', 50000, 'desc')
-    mockRepo.findById.mockResolvedValue(existing)
-
-    await expect(usecase.unarchive(1, 1))
       .rejects.toThrow('Workflow not found')
 
     expect(mockRepo.unarchiveWorkflow).not.toHaveBeenCalled()

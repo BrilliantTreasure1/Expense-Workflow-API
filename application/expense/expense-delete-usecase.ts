@@ -11,9 +11,9 @@ export class DeleteExpense implements IDeleteExpense {
 
     async delete(workflowId: number, userId: number, expenseId: number): Promise<Expense> {
 
-        const workflow = await this.workflowRepo.findById(workflowId);
+        const workflow = await this.workflowRepo.findById(workflowId, userId);
 
-        if (!workflow || workflow.userId !== userId) {
+        if (!workflow) {
             throw new Error("Workflow not found");
         }
 

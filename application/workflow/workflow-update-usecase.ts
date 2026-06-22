@@ -7,9 +7,9 @@ export class UpdateWorkflow implements IUpdateWorkflow {
 
     async update(userId: number, workflowId: number, title: string, budget: number, description: string): Promise<Workflow> {
 
-        const existing = await this.workflowRepo.findById(workflowId);
+        const existing = await this.workflowRepo.findById(workflowId, userId);
 
-        if (!existing || existing.userId !== userId) {
+        if (!existing) {
             throw new Error("Workflow not found");
         }
 

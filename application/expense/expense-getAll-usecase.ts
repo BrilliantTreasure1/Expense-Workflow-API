@@ -12,9 +12,9 @@ export class GetAllExpenses implements IGetAllExpenses {
 
     async getAll(workflowId: number, userId: number, from?: string, to?: string): Promise<{ workflow: Workflow; expenses: Expense[] }> {
 
-        const workflow = await this.workflowRepo.findById(workflowId);
+        const workflow = await this.workflowRepo.findById(workflowId, userId);
 
-        if (!workflow || workflow.userId !== userId) {
+        if (!workflow) {
             throw new Error("Workflow not found");
         }
 

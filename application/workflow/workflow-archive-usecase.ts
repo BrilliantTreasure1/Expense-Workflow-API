@@ -7,9 +7,9 @@ export class ArchiveWorkflow implements IArchiveWorkflow {
 
     async archive(userId: number, workflowId: number): Promise<Workflow> {
 
-        const existing = await this.workflowRepo.findById(workflowId);
+        const existing = await this.workflowRepo.findById(workflowId, userId);
 
-        if (!existing || existing.userId !== userId) {
+        if (!existing) {
             throw new Error("Workflow not found");
         }
 

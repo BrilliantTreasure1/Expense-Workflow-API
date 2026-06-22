@@ -45,8 +45,7 @@ describe('DeleteExpense usecase', () => {
   })
 
   it('throws when workflow belongs to another user', async () => {
-    const workflow = Workflow.create(1, 2, 'Other workflow', 50000, 'desc')
-    mockWorkflowRepo.findById.mockResolvedValue(workflow)
+    mockWorkflowRepo.findById.mockResolvedValue(null)
 
     await expect(usecase.delete(1, 1, 1))
       .rejects.toThrow('Workflow not found')

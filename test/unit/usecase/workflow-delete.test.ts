@@ -22,7 +22,7 @@ describe('DeleteWorkflow usecase', () => {
     const result = await usecase.delete(1, 1)
 
     expect(result.getTitle()).toBe('Workflow to delete')
-    expect(mockRepo.findById).toHaveBeenCalledWith(1)
+    expect(mockRepo.findById).toHaveBeenCalledWith(1, 1)
     expect(mockRepo.deleteWorkflow).toHaveBeenCalledWith(1, 1)
   })
 
@@ -30,16 +30,6 @@ describe('DeleteWorkflow usecase', () => {
     mockRepo.findById.mockResolvedValue(null)
 
     await expect(usecase.delete(1, 999))
-      .rejects.toThrow('Workflow not found')
-
-    expect(mockRepo.deleteWorkflow).not.toHaveBeenCalled()
-  })
-
-  it('throws when workflow belongs to another user', async () => {
-    const existing = Workflow.create(1, 2, 'Other user workflow', 50000, 'desc')
-    mockRepo.findById.mockResolvedValue(existing)
-
-    await expect(usecase.delete(1, 1))
       .rejects.toThrow('Workflow not found')
 
     expect(mockRepo.deleteWorkflow).not.toHaveBeenCalled()
