@@ -47,6 +47,18 @@ async function migrate() {
     `);
     console.log("✅ Expenses table created");
 
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_workflows_user_id ON workflows(user_id)`);
+    console.log("✅ Index idx_workflows_user_id created");
+
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_expenses_workflow_id ON expenses(workflow_id)`);
+    console.log("✅ Index idx_expenses_workflow_id created");
+
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_expenses_workflow_date ON expenses(workflow_id, date)`);
+    console.log("✅ Index idx_expenses_workflow_date created");
+
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_workflows_user_status ON workflows(user_id, status)`);
+    console.log("✅ Index idx_workflows_user_status created");
+
     await pool.end();
 
   } catch (error) {

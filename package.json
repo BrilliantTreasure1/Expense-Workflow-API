@@ -7,7 +7,8 @@
     "dev": "tsx watch app.ts",
     "start": "tsx app.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "migrate": "tsx database/migrate.ts"
   },
   "keywords": [],
   "author": "",
