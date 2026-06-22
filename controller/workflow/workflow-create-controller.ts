@@ -6,19 +6,12 @@ export class CreateWorkflowController {
     constructor(private workflowUsecase: ICreateWorkflow) {}
 
     create = async (req: Request, res: Response) => {
+        const userId = req.user!.userId;
 
-        try {
+        const { title, budget, description } = req.body;
 
-            const userId = req.user!.userId;
+        const workflow = await this.workflowUsecase.create(userId, title, budget, description);
 
-            const { title, budget, description } = req.body;
-
-            const workflow = await this.workflowUsecase.create(userId, title, budget, description);
-
-            return res.status(201).json(workflow);
-
-        } catch (error) {
-            res.status(400).json({ error: (error as Error).message });
-        }
+        return res.status(201).json(workflow);
     }
 }

@@ -1,3 +1,5 @@
+import { ValidationError } from "../errors/app-error";
+
 export class User {
 
     private constructor(
@@ -11,19 +13,19 @@ export class User {
     static create(id: number | null, username: string, email: string, phonenumber: string, password: string): User {
 
         if (typeof username !== 'string' || username.length < 5) {
-            throw new Error("Username is too short");
+            throw new ValidationError("Username is too short");
         }
 
         if (typeof email !== 'string' || !email.includes("@")) {
-            throw new Error("Invalid email");
+            throw new ValidationError("Invalid email");
         }
 
         if (typeof phonenumber !== 'string' || phonenumber.length < 11) {
-            throw new Error("Phone number is too short");
+            throw new ValidationError("Phone number is too short");
         }
 
         if (typeof password !== 'string' || password.length < 8) {
-            throw new Error("Password too short");
+            throw new ValidationError("Password too short");
         }
 
         return new User(id, username, email, phonenumber, password);

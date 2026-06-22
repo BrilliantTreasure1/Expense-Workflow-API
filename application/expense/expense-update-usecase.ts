@@ -2,6 +2,7 @@ import { Expense } from "../../entities/expense";
 import { IExpenseRepository } from "../../repository/expense/expense-repository.interface";
 import { IWorkflowRepository } from "../../repository/workflow/workflow-repository.interface";
 import { IUpdateExpense } from "./interface/expense-update-usecase.interface";
+import { NotFoundError, AppError } from "../../errors/app-error";
 
 export class UpdateExpense implements IUpdateExpense {
     constructor(
@@ -14,13 +15,13 @@ export class UpdateExpense implements IUpdateExpense {
         const workflow = await this.workflowRepo.findById(workflowId, userId);
 
         if (!workflow) {
-            throw new Error("Workflow not found");
+            throw new NotFoundError("Workflow not found");
         }
 
         const existing = await this.expenseRepo.findById(expenseId);
 
         if (!existing || existing.workflowId !== workflowId) {
-            throw new Error("Expense not found");
+            throw new NotFoundError("Expense not found");
         }
 
         const updated = Expense.create(expenseId, workflowId, title, description, amount, category, new Date(date));
@@ -28,7 +29,7 @@ export class UpdateExpense implements IUpdateExpense {
         const result = await this.expenseRepo.update(updated);
 
         if (!result) {
-            throw new Error("Failed to update expense");
+            throw new AppError(500, "Failed to update expense");
         }
 
         return result;

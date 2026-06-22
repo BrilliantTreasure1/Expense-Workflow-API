@@ -7,6 +7,7 @@ import { createWorkflow, getAllWorkflow, updateWorkflow, deleteWorkflow, archive
 import { createExpense, getAllExpenses, updateExpense, deleteExpense } from "./container/expense.container";
 import { reportOverview, reportWorkflow } from "./container/report.container";
 import { authMiddleware } from "./middleware/auth";
+import { errorHandler } from "./middleware/error-handler";
 
 
 const app = express();
@@ -38,6 +39,8 @@ app.delete("/workflow/:workflowId/expense/:id", authMiddleware, deleteExpense.de
 
 app.get("/reports/overview", authMiddleware, reportOverview.getOverview);
 app.get("/workflow/:workflowId/report", authMiddleware, reportWorkflow.getReport);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

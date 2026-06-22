@@ -1,6 +1,7 @@
 import { Workflow } from "../../entities/workflow";
 import { IWorkflowRepository } from "../../repository/workflow/workflow-repository.interface";
 import { IArchiveWorkflow } from "./interface/workflow-archive-usecase.interface";
+import { NotFoundError, AppError } from "../../errors/app-error";
 
 export class ArchiveWorkflow implements IArchiveWorkflow {
     constructor(private workflowRepo: IWorkflowRepository) {}
@@ -10,13 +11,13 @@ export class ArchiveWorkflow implements IArchiveWorkflow {
         const existing = await this.workflowRepo.findById(workflowId, userId);
 
         if (!existing) {
-            throw new Error("Workflow not found");
+            throw new NotFoundError("Workflow not found");
         }
 
         const result = await this.workflowRepo.archiveWorkflow(workflowId, userId);
 
         if (!result) {
-            throw new Error("Failed to archive workflow");
+            throw new AppError(500, "Failed to archive workflow");
         }
 
         return result;

@@ -1,6 +1,7 @@
 import { Workflow } from "../../entities/workflow";
 import { IWorkflowRepository } from "../../repository/workflow/workflow-repository.interface";
 import { ICreateWorkflow } from "./interface/workflow-create-usecase.interface";
+import { AppError } from "../../errors/app-error";
 
 export class CreateWorkflow implements ICreateWorkflow {
 
@@ -14,7 +15,7 @@ export class CreateWorkflow implements ICreateWorkflow {
 
         const result = await this.workflowRepo.createWorkflow(workflow)
         if (!result) {
-            throw new Error("Failed to create workflow");
+            throw new AppError(500, "Failed to create workflow");
         }
 
         return result

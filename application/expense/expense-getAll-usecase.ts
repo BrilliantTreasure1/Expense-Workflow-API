@@ -3,6 +3,7 @@ import { Workflow } from "../../entities/workflow";
 import { IExpenseRepository } from "../../repository/expense/expense-repository.interface";
 import { IWorkflowRepository } from "../../repository/workflow/workflow-repository.interface";
 import { IGetAllExpenses } from "./interface/expense-getAll-usecase.interface";
+import { NotFoundError } from "../../errors/app-error";
 
 export class GetAllExpenses implements IGetAllExpenses {
     constructor(
@@ -15,7 +16,7 @@ export class GetAllExpenses implements IGetAllExpenses {
         const workflow = await this.workflowRepo.findById(workflowId, userId);
 
         if (!workflow) {
-            throw new Error("Workflow not found");
+            throw new NotFoundError("Workflow not found");
         }
 
         const expenses = await this.expenseRepo.getAllByWorkflowId(workflowId, from, to);

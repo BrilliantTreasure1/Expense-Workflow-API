@@ -1,6 +1,7 @@
 import { IUserRepository } from "../../repository/user/user-repository.interface";
 import { IUserLoginUsecase, SafeUser } from "./interface/user-login-usecase.interface";
 import bcrypt from "bcryptjs"
+import { UnauthorizedError } from "../../errors/app-error";
 
 
 export class Login implements IUserLoginUsecase {
@@ -17,7 +18,7 @@ export class Login implements IUserLoginUsecase {
                 const isMatch = await bcrypt.compare(password, user.getPassword());
         
                 if (!isMatch) {
-                    throw new Error("Invalid credentials");
+                    throw new UnauthorizedError("Invalid credentials");
                 }
                 
                 return user.toJSON();

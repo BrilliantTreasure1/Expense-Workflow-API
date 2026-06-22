@@ -5,25 +5,18 @@ export class GetAllExpensesController {
     constructor(private expenseUsecase: IGetAllExpenses) {}
 
     getAll = async (req: Request, res: Response) => {
+        const userId = req.user!.userId;
+        const workflowId = Number(req.params.workflowId);
 
-        try {
-
-            const userId = req.user!.userId;
-            const workflowId = Number(req.params.workflowId);
-
-            if (!workflowId || isNaN(workflowId)) {
-                return res.status(400).json({ error: "Invalid workflow id" });
-            }
-
-            const from = req.query.from as string | undefined;
-            const to = req.query.to as string | undefined;
-
-            const result = await this.expenseUsecase.getAll(workflowId, userId, from, to);
-
-            return res.status(200).json({ workflow: result.workflow.toJSON(), expenses: result.expenses.map(e => e.toJSON()) });
-
-        } catch (error) {
-            res.status(400).json({ error: (error as Error).message });
+        if (!workflowId || isNaN(workflowId)) {
+            return res.status(400).json({ error: "Invalid workflow id" });
         }
+
+        const from = req.query.from as string | undefined;
+        const to = req.query.to as string | undefined;
+
+        const result = await this.expenseUsecase.getAll(workflowId, userId, from, to);
+
+        return res.status(200).json({ workflow: result.workflow.toJSON(), expenses: result.expenses.map(e => e.toJSON()) });
     }
 }

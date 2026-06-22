@@ -1,6 +1,7 @@
 import { IWorkflowRepository } from "../../repository/workflow/workflow-repository.interface";
 import { IExpenseRepository } from "../../repository/expense/expense-repository.interface";
 import { IReportWorkflow, WorkflowReport } from "./interface/report-workflow-usecase.interface";
+import { NotFoundError } from "../../errors/app-error";
 
 export class ReportWorkflow implements IReportWorkflow {
     constructor(
@@ -12,7 +13,7 @@ export class ReportWorkflow implements IReportWorkflow {
         const workflow = await this.workflowRepo.findById(workflowId, userId);
 
         if (!workflow) {
-            throw new Error("Workflow not found");
+            throw new NotFoundError("Workflow not found");
         }
 
         const { total, count } = await this.expenseRepo.getTotalExpensesByWorkflowId(workflowId);

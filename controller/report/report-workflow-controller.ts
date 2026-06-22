@@ -5,19 +5,15 @@ export class ReportWorkflowController {
     constructor(private reportUsecase: IReportWorkflow) {}
 
     getReport = async (req: Request, res: Response) => {
-        try {
-            const userId = req.user!.userId;
-            const workflowId = Number(req.params.workflowId);
+        const userId = req.user!.userId;
+        const workflowId = Number(req.params.workflowId);
 
-            if (!workflowId || isNaN(workflowId)) {
-                return res.status(400).json({ error: "Invalid workflow id" });
-            }
-
-            const report = await this.reportUsecase.getReport(workflowId, userId);
-
-            return res.status(200).json(report);
-        } catch (error) {
-            res.status(400).json({ error: (error as Error).message });
+        if (!workflowId || isNaN(workflowId)) {
+            return res.status(400).json({ error: "Invalid workflow id" });
         }
+
+        const report = await this.reportUsecase.getReport(workflowId, userId);
+
+        return res.status(200).json(report);
     }
 }

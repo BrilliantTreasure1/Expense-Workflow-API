@@ -2,6 +2,7 @@ import { User } from "../../entities/user";
 import { IUserRepository } from "../../repository/user/user-repository.interface";
 import bcrypt from "bcryptjs"
 import { IUserRegisterUsecase } from "./interface/user-register-usecase.interface";
+import { ConflictError, AppError } from "../../errors/app-error";
 
 
 export class Register implements IUserRegisterUsecase {
@@ -12,7 +13,7 @@ export class Register implements IUserRegisterUsecase {
                 const existing = await this.userRepo.findByEmail(email);
         
                 if (existing) {
-                    throw new Error("user registred before")
+                    throw new ConflictError("user registred before")
                 }
         
                 const hashPassword = await bcrypt.hash(password , 10);
@@ -22,7 +23,7 @@ export class Register implements IUserRegisterUsecase {
                 const result = await this.userRepo.register(user)
         
                    if (!result) {
-                    throw new Error("Failed to register user");
+                    throw new AppError(500, "Failed to register user");
                 }
                 
                 return result

@@ -1,3 +1,5 @@
+import { ValidationError } from "../errors/app-error";
+
 export class Expense {
 
     private constructor(
@@ -23,11 +25,11 @@ export class Expense {
     ): Expense {
 
         if (!title || title.length < 1) {
-            throw new Error("Title is required");
+            throw new ValidationError("Title is required");
         }
 
         if (amount <= 0) {
-            throw new Error("Amount must be greater than zero");
+            throw new ValidationError("Amount must be greater than zero");
         }
 
         return new Expense(id, workflowId, title, description, amount, category, date, new Date(), null);

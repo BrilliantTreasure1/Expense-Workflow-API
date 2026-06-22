@@ -1,4 +1,5 @@
 import { Status } from "./status";
+import { ValidationError } from "../errors/app-error";
 
 export class Workflow {
 
@@ -16,11 +17,11 @@ export class Workflow {
     static create(id: number | null, userId: number, title: string, budget: number, description: string, status: Status = "active"): Workflow {
 
         if (title.length < 5) {
-            throw new Error("Title is too short");
+            throw new ValidationError("Title is too short");
         }
 
         if (budget < 0) {
-            throw new Error("Invalid budget");
+            throw new ValidationError("Invalid budget");
         }
 
         return new Workflow(id, userId, title, budget, description, new Date(), null, status);
