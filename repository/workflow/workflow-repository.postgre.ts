@@ -1,6 +1,6 @@
 import { Workflow } from "../../entities/workflow";
 import { pool } from "../../config/db";
-import { IWorkflowRepository } from "./workflow-repository.interface";
+import { IWorkflowRepository, WorkflowStats } from "./workflow-repository.interface";
 
 export class WorkflowRepositoryPostgresql implements IWorkflowRepository {
     async createWorkflow(workflow: Workflow): Promise<Workflow | null> {
@@ -231,6 +231,23 @@ export class WorkflowRepositoryPostgresql implements IWorkflowRepository {
         } catch (error) {
             console.error("Error unarchiving workflow:", error);
             throw new Error("Could not unarchive workflow");
+        }
+    }
+
+    async getWorkflowStats(userId: number): Promise<WorkflowStats> {
+        try {
+            const query = `
+                SELECT COUNT(*)::int AS total_workflows, COALESCE(SUM(budget), 0)::float AS total_budget
+                FROM workflows WHERE user_id = $1
+            `;
+            const result = await pool.query(query, [userId]);
+            return {
+                totalWorkflows: Number(result.rows[0].total_workflows),
+                totalBudget: Number(result.rows[0].total_budget),
+            };
+        } catch (error) {
+            console.error("Error fetching workflow stats:", error);
+            throw new Error("Could not fetch workflow stats");
         }
     }
 }

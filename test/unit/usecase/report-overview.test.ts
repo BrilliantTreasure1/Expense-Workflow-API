@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ReportOverview } from '../../../application/report/report-overview-usecase'
-import { Workflow } from '../../../entities/workflow'
 
 describe('ReportOverview usecase', () => {
-  let mockWorkflowRepo: { getAllByUserId: ReturnType<typeof vi.fn> }
+  let mockWorkflowRepo: { getWorkflowStats: ReturnType<typeof vi.fn> }
   let mockExpenseRepo: {
     getTotalExpensesByUserId: ReturnType<typeof vi.fn>
     getCategorySummaryByUserId: ReturnType<typeof vi.fn>
@@ -11,7 +10,7 @@ describe('ReportOverview usecase', () => {
   let usecase: ReportOverview
 
   beforeEach(() => {
-    mockWorkflowRepo = { getAllByUserId: vi.fn() }
+    mockWorkflowRepo = { getWorkflowStats: vi.fn() }
     mockExpenseRepo = {
       getTotalExpensesByUserId: vi.fn(),
       getCategorySummaryByUserId: vi.fn(),
@@ -20,11 +19,7 @@ describe('ReportOverview usecase', () => {
   })
 
   it('returns overview report with valid data', async () => {
-    const workflows = [
-      Workflow.create(1, 1, 'First Title', 100000, 'desc'),
-      Workflow.create(2, 1, 'Second Title', 200000, 'desc'),
-    ]
-    mockWorkflowRepo.getAllByUserId.mockResolvedValue(workflows)
+    mockWorkflowRepo.getWorkflowStats.mockResolvedValue({ totalWorkflows: 2, totalBudget: 300000 })
     mockExpenseRepo.getTotalExpensesByUserId.mockResolvedValue(50000)
     mockExpenseRepo.getCategorySummaryByUserId.mockResolvedValue([
       { category: 'food', count: 2, total: 30000 },
@@ -42,7 +37,7 @@ describe('ReportOverview usecase', () => {
   })
 
   it('returns zero values when user has no workflows', async () => {
-    mockWorkflowRepo.getAllByUserId.mockResolvedValue([])
+    mockWorkflowRepo.getWorkflowStats.mockResolvedValue({ totalWorkflows: 0, totalBudget: 0 })
     mockExpenseRepo.getTotalExpensesByUserId.mockResolvedValue(0)
     mockExpenseRepo.getCategorySummaryByUserId.mockResolvedValue([])
 
@@ -56,8 +51,7 @@ describe('ReportOverview usecase', () => {
   })
 
   it('calculates budget usage percent correctly', async () => {
-    const workflows = [Workflow.create(1, 1, 'Budget Title', 100000, 'desc')]
-    mockWorkflowRepo.getAllByUserId.mockResolvedValue(workflows)
+    mockWorkflowRepo.getWorkflowStats.mockResolvedValue({ totalWorkflows: 1, totalBudget: 100000 })
     mockExpenseRepo.getTotalExpensesByUserId.mockResolvedValue(25000)
     mockExpenseRepo.getCategorySummaryByUserId.mockResolvedValue([])
 
@@ -67,8 +61,7 @@ describe('ReportOverview usecase', () => {
   })
 
   it('rounds budget usage percent', async () => {
-    const workflows = [Workflow.create(1, 1, 'Title', 100000, 'desc')]
-    mockWorkflowRepo.getAllByUserId.mockResolvedValue(workflows)
+    mockWorkflowRepo.getWorkflowStats.mockResolvedValue({ totalWorkflows: 1, totalBudget: 100000 })
     mockExpenseRepo.getTotalExpensesByUserId.mockResolvedValue(33333)
     mockExpenseRepo.getCategorySummaryByUserId.mockResolvedValue([])
 
@@ -78,8 +71,7 @@ describe('ReportOverview usecase', () => {
   })
 
   it('handles zero budget without division error', async () => {
-    const workflows = [Workflow.create(1, 1, 'Free Title', 0, 'desc')]
-    mockWorkflowRepo.getAllByUserId.mockResolvedValue(workflows)
+    mockWorkflowRepo.getWorkflowStats.mockResolvedValue({ totalWorkflows: 1, totalBudget: 0 })
     mockExpenseRepo.getTotalExpensesByUserId.mockResolvedValue(0)
     mockExpenseRepo.getCategorySummaryByUserId.mockResolvedValue([])
 
@@ -91,13 +83,13 @@ describe('ReportOverview usecase', () => {
   })
 
   it('returns data only for the given userId', async () => {
-    mockWorkflowRepo.getAllByUserId.mockResolvedValue([])
+    mockWorkflowRepo.getWorkflowStats.mockResolvedValue({ totalWorkflows: 0, totalBudget: 0 })
     mockExpenseRepo.getTotalExpensesByUserId.mockResolvedValue(0)
     mockExpenseRepo.getCategorySummaryByUserId.mockResolvedValue([])
 
     await usecase.getOverview(5)
 
-    expect(mockWorkflowRepo.getAllByUserId).toHaveBeenCalledWith(5)
+    expect(mockWorkflowRepo.getWorkflowStats).toHaveBeenCalledWith(5)
     expect(mockExpenseRepo.getTotalExpensesByUserId).toHaveBeenCalledWith(5)
     expect(mockExpenseRepo.getCategorySummaryByUserId).toHaveBeenCalledWith(5)
   })
